@@ -8,13 +8,14 @@ const passport = require('passport');
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
-
+var helpers = require("./views/helps");
 var app = express();
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.engine("handlebars",expbs({
-  defaultLayout:"main"
+  defaultLayout:"main",
+  helpers: helpers
 }));
 app.set('view engine', 'handlebars');
 

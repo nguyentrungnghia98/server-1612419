@@ -1,0 +1,36 @@
+<div id="particles-js">
+  <div class="lock-wrapper">
+    <div class="row">
+      <div class="col-xs-12">
+        <div class="lock-box glass">
+          <div class="main">
+            <h3 id="page-title">Please Log In, or <a href="/register">Sign Up</a></h3>
+            <div class="login-or">
+              <hr class="hr-or">
+            </div>
+            <form action="/user/login" method="post">
+              <div class="form-group">
+                <label for="inputUsernameEmail">Email</label>
+                <small class="text-danger ml-auto hide" id="email_invalid">*Email invalid</small>
+                <input type="text" name="email" class="form-control" id="email" required> 
+              </div>
+              <div class="form-group">
+                <label for="inputPassword">Password</label>
+                <a class="ml-auto" href="#">Forgot password?</a>
+                <input type="password" name="password" class="form-control" id="password" required>
+              </div>
+              <div class="d-flex mt-3">
+                <button type="submit" class="btn btn btn-primary ml-auto" id="submit" disabled>
+                  <span style="color:white;">Log In</span>
+                </button>
+              </div>
+
+            </form>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>

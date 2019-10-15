@@ -10,7 +10,7 @@ router.post('/register',  function (req, res, next) {
   passport.authenticate('local-signup', {session: false}, (err, user, info) => {
       console.log(err,'user',user._id);
       if (err || !user) {
-          return next({
+          return res.status(401).json({
               message: info ? info.message : 'Register failed',
               err
           });
@@ -18,7 +18,11 @@ router.post('/register',  function (req, res, next) {
 
       req.login(user, {session: false}, (err) => {
           if (err) {
-            return next(err);
+            return res.status(401).json({
+              message: "Register failed",
+              info,
+              err
+            });
           }
 
           const token = jwt.sign({id: user._id}, secret);
@@ -32,9 +36,9 @@ router.post('/register',  function (req, res, next) {
 /* Login new user */
 router.post('/login', function (req, res, next) {
   passport.authenticate('local-login', {session: false}, (err, user, info) => {
-    console.log(err,'user',user._id);
+    console.log(err,'user',user);
       if (err || !user) {
-          return next({
+          return res.status(401).json({
               message: info ? info.message : 'Login failed',
               err
           });
@@ -42,8 +46,11 @@ router.post('/login', function (req, res, next) {
 
       req.login(user, (err) => {
           if (err) {
-            console.log('err',err)
-             return next(err);
+             return res.status(401).json({
+              message: "Login failed",
+              info,
+              err
+             });
           }
 
           const token = jwt.sign({id: user._id}, secret);

@@ -7,16 +7,9 @@ router.get('/', function(req, res, next) {
   res.render('login', { layout: 'login.handlebars',script: "login", style: "login" });
 });
 
-function resolveAfter2Seconds() {
-  return new Promise(resolve => {
-    setTimeout(() => {
-      resolve('resolved');
-    }, 2000);
-  });
-}
-router.get('/login', async function(req, res, next) {
-  const users = await resolveAfter2Seconds();
-  res.render('login', { layout: 'login.handlebars', users, script: "login", style: "login" });
+
+router.get('/login', function(req, res, next) {
+  res.render('login', { layout: 'login.handlebars', script: "login", style: "login" });
 });
 
 router.get('/register', function(req, res, next) {

@@ -67,9 +67,9 @@ module.exports = function (app, passport) {
   };
 
   const local_jwt = new JwtStrategy({
-    //jwtFromRequest: ExtractJwt.fromAuthHeaderWithScheme('JWT'),
+    jwtFromRequest: ExtractJwt.fromAuthHeaderWithScheme('JWT'),
     //jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-    jwtFromRequest: cookieExtractor,
+    // jwtFromRequest: cookieExtractor,
     secretOrKey: secret
   }, 
     function(jwt_payload, done) {

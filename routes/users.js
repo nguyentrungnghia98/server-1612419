@@ -26,7 +26,6 @@ router.post('/register',  function (req, res, next) {
           }
 
           const token = jwt.sign({id: user._id}, secret);
-          res.cookie('JWT', token, { maxAge: 900000, httpOnly: true });
           res.json({name: user.name, email:user.email, token});
       });
   })
@@ -38,7 +37,7 @@ router.post('/login', function (req, res, next) {
   passport.authenticate('local-login', {session: false}, (err, user, info) => {
     console.log(err,'user',user);
       if (err || !user) {
-          return res.status(401).json({
+          return res.status(403).json({
               message: info ? info.message : 'Login failed',
               err
           });
@@ -46,7 +45,7 @@ router.post('/login', function (req, res, next) {
 
       req.login(user, (err) => {
           if (err) {
-             return res.status(401).json({
+             return res.status(403).json({
               message: "Login failed",
               info,
               err
@@ -54,7 +53,6 @@ router.post('/login', function (req, res, next) {
           }
 
           const token = jwt.sign({id: user._id}, secret);
-          res.cookie('JWT', token, { maxAge: 900000, httpOnly: true });
 
           res.json({name: user.name, email:user.email, token});
           //return res.redirect('/user/me');
@@ -75,7 +73,7 @@ router.get('/me',  function (req, res, next) {
         res.status(400).send(info.message + '. Please login!');
       }else{
         console.log('User was found!',user);
-        res.json(user)
+        res.json({email: user.email, name: user.name})
       }
   })
   (req, res, next);

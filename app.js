@@ -3,22 +3,13 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
-var expbs = require("express-handlebars");
 const passport = require('passport');
-
+var cors = require('cors');
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
-var helpers = require("./views/helps");
 var app = express();
 
-// view engine setup
-app.set('views', path.join(__dirname, 'views'));
-app.engine("handlebars",expbs({
-  defaultLayout:"main",
-  helpers: helpers
-}));
-app.set('view engine', 'handlebars');
-
+app.use(cors());
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));

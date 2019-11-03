@@ -39,6 +39,9 @@ mongoose.connect(
 
 var server = http.createServer(app);
 
+
+//socket.io
+require("../socket.io/index")(server);
 /**
  * Listen on provided port, on all network interfaces.
  */

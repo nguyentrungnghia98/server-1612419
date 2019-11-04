@@ -127,10 +127,11 @@ module.exports = function(server) {
 
     socket.on("game.win", function(data) {
       console.log("game.win")
-      if (!getOpponent(playerEmail)) {
+      
+      opponentEmail = players[playerEmail].opponent;
+      if (!getOpponent(playerEmail) || !opponentEmail) {
         return;
       }
-      opponentEmail = players[playerEmail].opponent;
       players[playerEmail].caro.status = 'win';
       
       players[opponentEmail].caro.status = 'win';
@@ -184,7 +185,8 @@ module.exports = function(server) {
     });
     //process draw
     socket.on("accept.draw", function() {
-      if (!getOpponent(playerEmail)) {
+      opponentEmail = players[playerEmail].opponent;
+      if (!getOpponent(playerEmail) || !opponentEmail) {
         return;
       }
       players[playerEmail].caro.status = 'draw';
@@ -221,7 +223,8 @@ module.exports = function(server) {
 
     // on receive message
     socket.on("message.send", function(data) {
-      if (!getOpponent(playerEmail)) {
+      opponentEmail = players[playerEmail].opponent;
+      if (!getOpponent(playerEmail) || !opponentEmail) {
         return;
       }
       players[playerEmail].messages.push(data);

@@ -73,7 +73,7 @@ module.exports = function (app, passport) {
     secretOrKey: secret
   }, 
     function(jwt_payload, done) {
-    console.log('jwt',jwt_payload)
+    //console.log('jwt',jwt_payload)
     User.findOne({_id: jwt_payload.id}, function(err, user) {
         if (err) {
             return done(err, false);

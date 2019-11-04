@@ -11,7 +11,7 @@ const auth_api = async (req, res, next) => {
       return res.status(403).json({ error: 'Permisstion require!' })
     }else{
       req.user = user;
-      console.log('User was found!',user);
+      //console.log('User was found!',user);
       next();
     }
   })

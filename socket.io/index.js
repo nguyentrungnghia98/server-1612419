@@ -23,6 +23,7 @@ function joinGame(socket, user) {
         history: []
       },
 
+      messages: [],
       // The symbol will become 'O' if the player is unmatched
       symbol: "X",
 
@@ -90,7 +91,7 @@ module.exports = function(server) {
         };
       }
 
-      const { caro } = players[playerEmail];
+      const { caro, messages } = players[playerEmail];
       opponentEmail = players[playerEmail].opponent;
       console.log('opponentEmail',opponentEmail)
       if(opponentEmail){
@@ -102,7 +103,8 @@ module.exports = function(server) {
           symbol: players[playerEmail].symbol,
           caro,
           players: tmp,
-          room
+          room,
+          messages
         });
         // trigger opponent start game
         getOpponent(playerEmail).join(room);
@@ -110,7 +112,8 @@ module.exports = function(server) {
           symbol: players[opponentEmail].symbol,
           caro,
           players: tmp,
-          room
+          room,
+          messages
         });
       }
     });
@@ -221,6 +224,8 @@ module.exports = function(server) {
       if (!getOpponent(playerEmail)) {
         return;
       }
+      players[playerEmail].messages.push(data);
+      players[opponentEmail].messages.push(data);
       console.log("message.receive");
       io.to(room).emit("message.receive", data);
     });

@@ -31,6 +31,7 @@ function joinGame(socket, user) {
       socket: socket,
 
       user,
+      isOnline: true,
 
       isContinute: false
     };
@@ -81,16 +82,7 @@ module.exports = function(server) {
       playerEmail = user.email;
       joinGame(socket, user);
 
-      const tmp = {};
-      for (let player in players) {
-        tmp[player] = {
-          opponent: players[player].opponent,
-          symbol: players[player].symbol,
-          user: players[player].user,
-          lastTurn: players[player].lastTurn,
-        };
-      }
-
+      players[playerEmail].isOnline = true;
       const { caro, messages } = players[playerEmail];
       opponentEmail = players[playerEmail].opponent;
       console.log('opponentEmail',opponentEmail)
@@ -102,16 +94,16 @@ module.exports = function(server) {
         socket.emit("game.begin", {
           symbol: players[playerEmail].symbol,
           caro,
-          players: tmp,
           room,
+          isOpponentOnline: players[opponentEmail].isOnline,
           messages
         });
         // trigger opponent start game
         getOpponent(playerEmail).join(room);
         getOpponent(playerEmail).emit("game.begin", {
           symbol: players[opponentEmail].symbol,
+          isOpponentOnline: players[playerEmail].isOnline,
           caro,
-          players: tmp,
           room,
           messages
         });
@@ -141,10 +133,19 @@ module.exports = function(server) {
       socket.emit("game.winner", data);
       getOpponent(playerEmail).emit("game.winner", data);
     });
+    // on reaconnect
+    socket.on("reconnect.opponent", function(){
+      if (!getOpponent(playerEmail)) {
+        return;
+      }
+      
+      getOpponent(playerEmail).emit("opponent.reconnect");
+    })
 
     // Listens for a move to be made and emits an event to both
     // players after the move is completed
     socket.on("make.move", function(data) {
+      if(!players[playerEmail]) return;
       if (!getOpponent(playerEmail)) {
         return;
       }
@@ -185,6 +186,7 @@ module.exports = function(server) {
     });
     //process draw
     socket.on("accept.draw", function() {
+      if(!players[playerEmail]) return;
       opponentEmail = players[playerEmail].opponent;
       if (!getOpponent(playerEmail) || !opponentEmail) {
         return;
@@ -223,6 +225,7 @@ module.exports = function(server) {
 
     // on receive message
     socket.on("message.send", function(data) {
+      if(!players[playerEmail]) return;
       opponentEmail = players[playerEmail].opponent;
       if (!getOpponent(playerEmail) || !opponentEmail) {
         return;
@@ -235,8 +238,13 @@ module.exports = function(server) {
     
     //quit game
     socket.on("game.end", function() {
+      console.log("game end")
+      if (getOpponent(playerEmail)) {
+        getOpponent(playerEmail).emit("opponent.quit");
+        //delete players[getOpponent(socketId).id];
+      }
       if(players[playerEmail].opponent) delete players[players[playerEmail].opponent];
-      delete players[playerEmail]
+      delete players[playerEmail];
     });
 
     socket.on("disconnect", function() {
@@ -246,6 +254,7 @@ module.exports = function(server) {
         getOpponent(playerEmail).emit("opponent.left");
         //delete players[getOpponent(socketId).id];
       }
+      if(players[playerEmail]) players[playerEmail].isOnline = false;
       //delete players[socketId];
       if(playerEmail) unmatched = unmatched.filter(id => id !== playerEmail);
     });
